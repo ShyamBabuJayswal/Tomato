@@ -1,3 +1,4 @@
+import { log } from "console";
 import foodModel from "../models/foodModel.js";
 import fs from "fs";
 
@@ -14,8 +15,8 @@ const addFood = async (req, res) => {
             image: image_filename
         });
      try {
-
-        await food.save();
+       
+       await food.save();
         res.json({
             success: true,
             message: "Food Added",
@@ -29,4 +30,33 @@ const addFood = async (req, res) => {
     }
 };
 
-export { addFood };
+
+
+//All food list
+
+
+const listFood = async(req,res) =>{
+    try {
+  const foods= await foodModel.find({});
+            res.json({
+                success:true,
+                data:foods
+            
+        });
+    } catch (error) {
+        console.log(error);
+        res.json({
+            success:false,
+            message:error
+        })
+        
+        
+    }
+
+} 
+
+
+
+
+
+export { addFood,listFood };
