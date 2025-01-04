@@ -7,14 +7,14 @@ const foodSchema = new mongoose.Schema({
     },
     description:{
         type:String,
-        required:true,
+        required :true,
     },
     price:{
         type:Number,
-        required:true,
+        required:true, 
     },
     image:{
-        type:Number,
+        type:String,
         required:true,
     },
     category:{
