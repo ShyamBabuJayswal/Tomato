@@ -1,16 +1,69 @@
-import React, { useState } from 'react'
+import React, {  useState } from 'react'
 import "./Add.css"
 import { assets } from '../../assets/assets'
+import axios from "axios";
+import { toast } from 'react-toastify';
+
 
 
 const Add = () => {
+
+  const url="http://localhost:4000";
    
   const [image,setImage] = useState(false);
+  const [data,setData] = useState({
+    name:"",
+    description:"",
+    price:"",
+    category:"Salad"
+  })
+
+  const onChangeHandler =(event)=>{
+      const name=event.target.name;
+      const value=event.target.value;
+      setData(data =>({
+        ...data,[name]:value }))
+  }
+
+  const onSubmitHandler = async(event) =>{
+        event.preventDefault();
+        
+        const formdata=new FormData();
+        formdata.append("name",data.name);
+        formdata.append("description",data.description);
+        formdata.append("price",Number(data.price));
+        formdata.append("category",data.category);
+        formdata.append("image",image);
+        
+
+      const resp =await axios.post(`${url}/api/food/add`,formdata);
+      
+      if(resp.data.success){
+            setData({
+              name:"",
+              description:"",
+              price:"",
+              category:"Salad"
+      })
+       setImage(false);
+       toast.success(resp.data.message)
+      
+    }
+    
+   
+    
+      else{
+         toast.error(resp.data.message);
+      } 
+
+
+  }
+ 
 
 
   return (
     <div className='add'>
-    <form className='flex-col'>
+    <form className='flex-col' onSubmit={onSubmitHandler}>
     <div className='add-img-upload flex-col'>
       
       <p>Upload Image</p>
@@ -18,7 +71,7 @@ const Add = () => {
         <img src={image?URL.createObjectURL(image):assets.upload_area} alt=''/>
 
       </label>
-      <input onChange={(e) => setImage(e.target.files[0])} type='file' id='image' hidden required />
+      <input onChange={(e) => setImage(e.target.files[0])} type='file' id='image' hidden  />
 
 
      
@@ -26,13 +79,13 @@ const Add = () => {
     <div className='add-product-name flex-col'>
 
      <p>Product Name</p>
-     <input type='text' name='name' placeholder='Type here'/>
+     <input onChange={onChangeHandler} value={data.name}  type='text' name='name' placeholder='Type here' required/>
 
     </div>
     <div className='add-product-description flex-col'>
 
     <p>Product description</p>
-    <textarea name='description' rows='6' placeholder='Write content here' required></textarea>
+    <textarea onChange={onChangeHandler} value={data.description} name='description' rows='6' placeholder='Write content here' required></textarea>
 
     </div>
 
@@ -40,7 +93,7 @@ const Add = () => {
 
        <div className='add-category flex-col'>
              <p>Product category</p>
-             <select name='category'>
+             <select onChange={onChangeHandler}name='category'>
        <option value='Salad'>Salad</option>
        <option value='Rolls'>Rolls</option>
        <option value='Deserts'>Deserts</option>
@@ -53,7 +106,7 @@ const Add = () => {
        </div>
        <div className='add-price flex-col'>
           <p>Product price</p>
-          <input type='Number' name='price' placeholder='$20'/>
+          <input onChange={onChangeHandler} value={data.price} type='Number' name='price' placeholder='$20'/>
        </div>
 
       </div>
