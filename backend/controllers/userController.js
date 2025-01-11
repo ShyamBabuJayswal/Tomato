@@ -9,11 +9,49 @@ import validator from "Validator"
 
 //login user 
 
-const loginUser = async (req,res) => {
+const loginUser = async (req, res) => {
+    const { email, password } = req.body;
 
+    try {
+        // Find user by email
+        const user = await userModel.findOne({ email });
+        
+        // Check if user exists
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
 
+        // Compare passwords
+        const isMatch = await bcrypt.compare(password, user.password);
 
-}
+        if (!isMatch) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid credentials"
+            });
+        }
+
+        // Generate token
+        const token = createToken(user._id);
+
+        // Respond with success
+        res.status(200).json({
+            success: true,
+            token
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
+};
+
 
 const registerUser = async (req, res) => {
     const { name, password, email } = req.body;

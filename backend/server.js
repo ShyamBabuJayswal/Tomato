@@ -16,7 +16,7 @@ const port = 4000
 
 app.use(express.json())
 app.use(cors());
-app.use("/api/user",userRouter)
+
 
 
 
@@ -30,6 +30,7 @@ connectDB()
 //api endpoints
 app.use("/api/food", foodRouter);
 app.use("/images",express.static('uploads'))
+app.use("/api/user",userRouter)
 
 app.get('/',(req,res)=>{
     res.send("API WORKING")
