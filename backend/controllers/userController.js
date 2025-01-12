@@ -34,10 +34,10 @@ const loginUser = async (req, res) => {
             });
         }
 
-        // Generate token
-        const token = createToken(user._id);
+        
+        const token = generateToken(user._id);
 
-        // Respond with success
+       
         res.status(200).json({
             success: true,
             token
