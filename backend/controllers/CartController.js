@@ -35,7 +35,30 @@ import userModel from "../models/userModel.js"
 //remove items from user cart
 
 const removeFromCart =async (req,res)=>{
-  
+  try {
+    let userData =await userModel.findById(req.userId);
+    console.log(userData);
+    
+    let cartData = await userData.cartData;
+    console.log(cartData);
+    
+    if(cartData[req.body.itemId]>0){
+       cartData[req.body.itemId] -= 1;
+    }
+    await userModel.findByIdAndUpdate(req.body.userId,{cartData});
+
+    res.json({
+        success: true,
+        message:"Removed From Cart"
+    })
+  } catch (error) {
+    console.log(error);
+    res.json({
+        success: false,
+        message:"Error"
+    })
+    
+  }
 }
 
 //fetch user cart data
