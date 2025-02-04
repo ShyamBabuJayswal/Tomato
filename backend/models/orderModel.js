@@ -9,7 +9,7 @@ const orderSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
-    amount: {  // Fixed typo from "amout" to "amount"
+    amount: {  
         type: Number,
         required: true
     },
