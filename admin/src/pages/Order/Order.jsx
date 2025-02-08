@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Order.css";
 import { toast } from "react-toastify";
 import { assets } from "../../assets/assets.js";
+import { log } from "console";
 
 const Order = ({ url }) => {
   const [order, setOrder] = useState([]);
@@ -23,6 +24,17 @@ const Order = ({ url }) => {
       toast.error("Failed to fetch orders");
     }
   };
+  const stausHandler = async(event,orderId) => {
+    const response = await axios.post(url+"/api/order/status",{
+      orderId,
+      status:event.target.value
+    })
+    if(response.data.success){
+       await fetchAllOrders();
+
+    }
+     
+  }
 
   useEffect(() => {
     fetchAllOrders();
@@ -67,7 +79,7 @@ const Order = ({ url }) => {
               <p>Items: {order.items?.length || 0}</p>
               <p>${order.amount}</p>
 
-              <select>
+              <select onChange={(event)=>stausHandler(event,order._id)} value={order.status}>
                 <option value="Food Processing">Food Processing</option>
                 <option value="Out for delivery">Out for delivery</option>
                 <option value="Delivered">Delivered</option>
